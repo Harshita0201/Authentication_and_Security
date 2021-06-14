@@ -4,7 +4,8 @@ const express=require("express");
 const bodyParser=require("body-parser");
 const ejs=require("ejs");
 const mongoose =require("mongoose");
-const encrypt = require("mongoose-encryption");
+// const encrypt = require("mongoose-encryption");
+const md5=require("md5");
 
 const app=express();
 
@@ -24,7 +25,7 @@ const userSchema=new mongoose.Schema({
 });
 
 
-userSchema.plugin(encrypt, {secret: process.env.SECRET, encryptedFields :["password"]});
+// userSchema.plugin(encrypt, {secret: process.env.SECRET, encryptedFields :["password"]});
 
 //create a mongoose model with collection name User (users)
 const User = new mongoose.model("User", userSchema);
@@ -48,7 +49,7 @@ app.post("/register",function(req,res){
   //create a new doc inside the users collection in our userDB
   const newUser= new User({
     email: req.body.username,
-    password: req.body.password
+    password: md5(req.body.password) //to turn this password to a irreversible hash
   });
 
   //saving the credentials of user or the new doc inside our userDB
@@ -67,7 +68,7 @@ app.post("/login",function(req,res){
 
   //get the posted req of email and pass on login page
   const username= req.body.username;
-  const password= req.body.password;
+  const password= md5(req.body.password); //hash the enterd password for later comparison
 
   //using the findOne method of mongoose we find the provided username in our db and store it in array foundUser
   User.findOne({email : username}, function(err, foundUser){
