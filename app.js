@@ -42,7 +42,7 @@ const userSchema=new mongoose.Schema({
   password:String
 });
 
-userSchema.plugin(passportLocalMongoose); //helps to hash and salt passwords and save users to mongodb
+userSchema.plugin(passportLocalMongoose); //helps to hash and salt passwords and save users to mongodb level 5 cookies and sessions
 
 
 
